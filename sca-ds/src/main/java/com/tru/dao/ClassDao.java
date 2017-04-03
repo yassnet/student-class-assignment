@@ -24,5 +24,9 @@ public interface ClassDao {
 
     Optional<Class> findById(String code);
 
-    List<Class> findByName(String name);
+    List<Class> findByTitle(String title);
+
+    List<Class> findByDescription(String description);
+
+    List<Class> findByKey(String key);
 }

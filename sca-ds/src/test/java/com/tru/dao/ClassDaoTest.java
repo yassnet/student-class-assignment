@@ -21,8 +21,6 @@ public class ClassDaoTest {
     ClassDao classDao;
 
     @Test
-    @Transactional
-    @Rollback
     public void getAll() throws Exception {
         List<Class> students = classDao.getAll();
 
@@ -65,8 +63,6 @@ public class ClassDaoTest {
     }
 
     @Test
-    @Transactional
-    @Rollback
     public void exists() throws Exception {
         Assert.assertTrue(classDao.exists(new Class("RED-514-V2-P1", "Network Security",
                 "Provide to student the ability to manage networks in terms of information security.")));
@@ -75,8 +71,6 @@ public class ClassDaoTest {
     }
 
     @Test
-    @Transactional
-    @Rollback
     public void findById() throws Exception {
         Optional<Class> aClass = classDao.findById("RED-515-V2-P1");
 
@@ -91,16 +85,34 @@ public class ClassDaoTest {
     }
 
     @Test
-    @Transactional
-    @Rollback
-    public void findByName() {
+    public void findByTitle() {
 
-        List<Class> aClass = classDao.findByName("security");
+        List<Class> aClass = classDao.findByTitle("Manage");
+
+        Assert.assertEquals(1, aClass.size());
+        Assert.assertEquals("RED-515-V2-P1", aClass.get(0).getCode());
+        Assert.assertTrue(aClass.get(0).getDescription().contains("well-founded knowledge"));
+    }
+
+    @Test
+    public void findByDescription() {
+
+        List<Class> aClass = classDao.findByDescription("networks in terms of information");
+
+        Assert.assertEquals(1, aClass.size());
+        Assert.assertEquals("RED-514-V2-P1", aClass.get(0).getCode());
+        Assert.assertEquals("Network Security", aClass.get(0).getTitle());
+        Assert.assertTrue(aClass.get(0).getDescription().contains("security"));
+    }
+
+    @Test
+    public void findByKey() {
+
+        List<Class> aClass = classDao.findByKey("security");
 
         Assert.assertEquals(1, aClass.size());
         Assert.assertEquals("RED-514-V2-P1", aClass.get(0).getCode());
         Assert.assertEquals("Network Security", aClass.get(0).getTitle());
         Assert.assertTrue(aClass.get(0).getDescription().contains("information security"));
-
     }
 }

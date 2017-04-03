@@ -4,9 +4,7 @@ import com.tru.dao.StudentClassDao;
 import com.tru.model.StudentClass;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +14,6 @@ import java.util.Optional;
  * Created by yassnet on 4/2/17.
  */
 public class StudentClassDaoImpl extends BaseDaoImpl implements StudentClassDao {
-
-    @Autowired
-    SessionFactory sessionFactory;
-
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
 
     @Override
     public List<StudentClass> getAll() {

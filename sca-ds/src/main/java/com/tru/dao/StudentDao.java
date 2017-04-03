@@ -24,5 +24,9 @@ public interface StudentDao {
 
     Optional<Student> findById(Integer id);
 
-    List<Student> findByName(String name);
+    List<Student> findByFirstName(String firstName);
+
+    List<Student> findByLastName(String lastName);
+
+    List<Student> findByKey(String key);
 }

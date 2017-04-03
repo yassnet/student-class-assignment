@@ -33,7 +33,7 @@ public class StudentDaoTest {
     public void save() throws Exception {
         studentDao.save(new Student(null, "Johny", "Vasquez"));
 
-        Assert.assertEquals(1, studentDao.findByName("Vasquez").size());
+        Assert.assertEquals(1, studentDao.findByLastName("Vasquez").size());
     }
 
     @Test
@@ -50,8 +50,8 @@ public class StudentDaoTest {
     @Transactional
     @Rollback
     public void remove() throws Exception {
-        studentDao.save(new Student(2, "Johnny", "Vasquez"));
-        List<Student> student = studentDao.findByName("Johnny");
+        studentDao.save(new Student(3, "Johnny", "Vasquez"));
+        List<Student> student = studentDao.findByFirstName("Johnny");
         Assert.assertEquals(1, student.size());
 
         studentDao.remove(student.get(0).getId());
@@ -80,11 +80,33 @@ public class StudentDaoTest {
     }
 
     @Test
-    public void findByName() {
+    public void findByFirstName() {
 
-        List<Student> student = studentDao.findByName("Aguila");
+        List<Student> student = studentDao.findByFirstName("Wilfredo");
+
+        Assert.assertEquals(1, student.size());
+        Assert.assertEquals(2, student.get(0).getId().intValue());
+        Assert.assertEquals("Wilfredo", student.get(0).getFirstName());
+        Assert.assertEquals("Aguila", student.get(0).getLastName());
+    }
+
+    @Test
+    public void findByLastName() {
+
+        List<Student> student = studentDao.findByLastName("Aguila");
 
         Assert.assertEquals(2, student.size());
+        Assert.assertEquals(1, student.get(0).getId().intValue());
+        Assert.assertEquals("Yassir", student.get(0).getFirstName());
+        Assert.assertEquals("Wilfredo", student.get(1).getFirstName());
+    }
+
+    @Test
+    public void findByKey() {
+
+        List<Student> student = studentDao.findByKey("Yass");
+
+        Assert.assertEquals(1, student.size());
         Assert.assertEquals(1, student.get(0).getId().intValue());
         Assert.assertEquals("Yassir", student.get(0).getFirstName());
     }

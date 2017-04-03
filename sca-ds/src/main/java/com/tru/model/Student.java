@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by yassnet on 4/2/17.
@@ -25,9 +24,6 @@ public class Student implements Serializable {
 
     @Column(name = "last_name")
     private String lastName;
-
-    @OneToMany(mappedBy = "student", cascade = CascadeType.REMOVE)
-    private List<StudentClass> classes;
 
     public Student() {
     }
@@ -60,14 +56,6 @@ public class Student implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public List<StudentClass> getClasses() {
-        return classes;
-    }
-
-    public void setClasses(List<StudentClass> classes) {
-        this.classes = classes;
     }
 
     @Override

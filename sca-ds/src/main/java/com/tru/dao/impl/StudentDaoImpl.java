@@ -82,14 +82,52 @@ public class StudentDaoImpl extends BaseDaoImpl implements StudentDao {
     }
 
     @Override
-    public List<Student> findByName(String name) {
+    public List<Student> findByFirstName(String firstName) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         List<Student> students = new ArrayList<>();
-        String hql = "from com.tru.model.Student where firstName like :name or lastName like :name";
+        String hql = "from com.tru.model.Student where firstName like :firstName";
         try {
             Query query = session.createQuery(hql);
-            query.setParameter("name", "%" + name + "%");
+            query.setParameter("firstName", "%" + firstName + "%");
+            students = query.list();
+            transaction.commit();
+            session.close();
+        } catch (Exception e) {
+            transaction.rollback();
+            session.close();
+        }
+        return students;
+    }
+
+    @Override
+    public List<Student> findByLastName(String lastName) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        List<Student> students = new ArrayList<>();
+        String hql = "from com.tru.model.Student where lastName like :lastName";
+        try {
+            Query query = session.createQuery(hql);
+            query.setParameter("lastName", "%" + lastName + "%");
+            students = query.list();
+            transaction.commit();
+            session.close();
+        } catch (Exception e) {
+            transaction.rollback();
+            session.close();
+        }
+        return students;
+    }
+
+    @Override
+    public List<Student> findByKey(String key) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        List<Student> students = new ArrayList<>();
+        String hql = "from com.tru.model.Student where firstName like :key or lastName like :key";
+        try {
+            Query query = session.createQuery(hql);
+            query.setParameter("key", "%" + key + "%");
             students = query.list();
             transaction.commit();
             session.close();
