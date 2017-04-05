@@ -1,3 +1,10 @@
+<%--
+
+ @author Yassir Aguila
+ @version $Revision: 1.0 $ $Date: 2017-04-03
+ @since 1.8
+
+--%>
 <!DOCTYPE html>
 <html>
 <head>
