@@ -5,9 +5,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Created by yassnet on 4/5/17.
+ * @author Yassir Aguila
+ * @version $Revision: 1.0 $ $Date: 2017-04-03
+ * @since 1.8
  */
-
 @Controller
 public class IndexController {
 

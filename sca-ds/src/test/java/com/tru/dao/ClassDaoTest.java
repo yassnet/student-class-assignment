@@ -13,6 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Yassir Aguila
+ * @version $Revision: 1.0 $ $Date: 2017-04-03
+ * @since 1.8
+ */
 @ContextConfiguration(locations = "classpath:db-derby-config.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ClassDaoTest {

@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Created by yassnet on 4/3/17.
+ * @author Yassir Aguila
+ * @version $Revision: 1.0 $ $Date: 2017-04-03
+ * @since 1.8
  */
 public interface StudentClassService {
 
