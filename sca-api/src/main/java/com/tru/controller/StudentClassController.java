@@ -22,9 +22,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Created by yassnet on 4/3/17.
+ * @author Yassir Aguila
+ * @version $Revision: 1.0 $ $Date: 2017-04-03
+ * @since 1.8
  */
-
 @RestController
 public class StudentClassController {
 

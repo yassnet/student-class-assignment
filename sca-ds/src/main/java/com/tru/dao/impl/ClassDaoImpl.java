@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Created by yassnet on 4/2/17.
+ * @author Yassir Aguila
+ * @version $Revision: 1.0 $ $Date: 2017-04-02
+ * @since 1.8
  */
 public class ClassDaoImpl extends BaseDaoImpl implements ClassDao {
 

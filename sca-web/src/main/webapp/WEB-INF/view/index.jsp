@@ -1,5 +1,9 @@
 <%--
-    Created by yassnet on 4/3/17.
+
+ @author Yassir Aguila
+ @version $Revision: 1.0 $ $Date: 2017-04-03
+ @since 1.8
+
 --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="false" %>

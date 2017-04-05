@@ -6,7 +6,9 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Created by yassnet on 4/2/17.
+ * @author Yassir Aguila
+ * @version $Revision: 1.0 $ $Date: 2017-04-02
+ * @since 1.8
  */
 public class BaseDaoImpl {
 
