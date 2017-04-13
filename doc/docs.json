@@ -1,9 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "Students - Classes Assignemnt RESTFul Web service.\n\nSee [Gibhub Project](https://github.com/yassnet/student-class-assignment) for more information.\n",
+    "description": "Students - Classes Assignment RESTFul Web service.\n\nSee [Gibhub Project](https://github.com/yassnet/student-class-assignment) for more information.\n",
     "version": "1.0",
-    "title": "Students - Classes Assignemnt",
+    "title": "Students - Classes Assignment",
     "contact": {
       "name": "yass.net@gmail.com"
     },
@@ -34,10 +34,19 @@
         ],
         "parameters": [
           {
-            "firstName": "query",
-            "lastName": "query",
-            "key": "query",
-            "description": "Find a student with a first name, last name or full name"
+            "name": "firstName",
+            "description": "Find a student by first name",
+            "type": "String"
+          },
+          {
+            "name": "lastName",
+            "description": "Find a student by last name",
+            "type": "String"
+          },
+          {
+            "name": "q",
+            "description": "Find a student by full name",
+            "type": "String"
           }
         ],
         "responses": {
@@ -67,9 +76,7 @@
             "description": "Request method not supported"
           }
         }
-      }
-    },
-    "/student/new": {
+      },
       "post": {
         "tags": [
           "student"
@@ -104,7 +111,7 @@
         }
       }
     },
-    "/student/{id}": {
+    "/students/{id}": {
       "put": {
         "tags": [
           "student"
@@ -202,9 +209,24 @@
         ],
         "parameters": [
           {
-            "title": "query",
-            "description": "Find a class with a title, description or using a key (It finds in code, title and description)",
-            "key": "query"
+            "name": "code",
+            "description": "Finds a class by code",
+            "type": "String"
+          },
+          {
+            "name": "title",
+            "description": "Finds a class by title",
+            "type": "String"
+          },
+          {
+            "name": "description",
+            "description": "Finds a class by description",
+            "type": "String"
+          },
+          {
+            "name": "q",
+            "description": "Finds a class by code, title or description",
+            "type": "String"
           }
         ],
         "responses": {
@@ -234,9 +256,7 @@
             "description": "Request method not supported"
           }
         }
-      }
-    },
-    "/class/new": {
+      },
       "post": {
         "tags": [
           "class"
@@ -271,7 +291,7 @@
         }
       }
     },
-    "/class/{id}": {
+    "/classes/{id}": {
       "put": {
         "tags": [
           "class"
@@ -396,7 +416,7 @@
         }
       }
     },
-    "/class/{code}/students": {
+    "/classes/{code}/students": {
       "get": {
         "tags": [
           "assignment"
@@ -420,7 +440,7 @@
         }
       }
     },
-    "/student/{code}/classes": {
+    "/students/{code}/classes": {
       "get": {
         "tags": [
           "assignment"
@@ -444,7 +464,7 @@
         }
       }
     },
-    "/class/{code}/student/{id}": {
+    "/classes/{code}/students/{id}": {
       "put": {
         "tags": [
           "assignment"
@@ -493,7 +513,7 @@
         }
       }
     },
-    "/student/{code}/class/{id}": {
+    "/students/{code}/classes/{id}": {
       "put": {
         "tags": [
           "assignment"

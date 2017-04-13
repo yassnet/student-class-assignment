@@ -1,6 +1,8 @@
 package com.tru.dao;
 
+import com.tru.exception.DaoException;
 import com.tru.model.Student;
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.core.Is.is;
 
 /**
  * @author Yassir Aguila
@@ -26,25 +34,28 @@ public class StudentDaoTest {
     private StudentDao studentDao;
 
     @Test
-    public void getAll() throws Exception {
+    public void getAll() throws DaoException {
         List<Student> students = studentDao.getAll();
 
-        Assert.assertEquals(2, students.size());
+        assertThat(students, not(IsEmptyCollection.empty()));
+        assertThat(students, hasSize(2));
     }
 
     @Test
     @Transactional
     @Rollback
-    public void save() throws Exception {
+    public void save() throws DaoException {
         studentDao.save(new Student(null, "Johny", "Vasquez"));
 
-        Assert.assertEquals(1, studentDao.findByLastName("Vasquez").size());
+        System.out.println("studentDao.getAll(): [" + studentDao.getAll() + "]");;
+
+        assertThat(studentDao.findByLastName("Vasquez"), hasSize(1));
     }
 
     @Test
     @Transactional
     @Rollback
-    public void update() throws Exception {
+    public void update() throws DaoException {
         studentDao.update(new Student(1, "Yassir", "Aguila Magne"));
         Optional<Student> student = studentDao.findById(1);
         Assert.assertTrue(student.isPresent());
@@ -54,9 +65,9 @@ public class StudentDaoTest {
     @Test
     @Transactional
     @Rollback
-    public void remove() throws Exception {
-        studentDao.save(new Student(3, "Johnny", "Vasquez"));
-        List<Student> student = studentDao.findByFirstName("Johnny");
+    public void remove() throws DaoException {
+        studentDao.save(new Student(null, "Johnny", "Ramirez"));
+        List<Student> student = studentDao.findByLastName("Ramirez");
         Assert.assertEquals(1, student.size());
 
         studentDao.remove(student.get(0).getId());
@@ -65,54 +76,52 @@ public class StudentDaoTest {
     }
 
     @Test
-    public void exists() throws Exception {
-        Assert.assertTrue(studentDao.exists(new Student(1, "Yassir", "Aguila")));
-        Assert.assertTrue(studentDao.exists(new Student(2, null, null)));
-        Assert.assertFalse(studentDao.exists(new Student(3, "Yassir", "Aguila")));
+    public void exists() throws DaoException {
+        Assert.assertTrue(studentDao.exists(1));
+        Assert.assertTrue(studentDao.exists(2));
+        Assert.assertFalse(studentDao.exists(3));
     }
 
     @Test
-    public void findById() throws Exception {
+    public void findById() throws DaoException {
         Optional<Student> student = studentDao.findById(1);
 
         Assert.assertTrue(student.isPresent());
-        Assert.assertEquals(1, student.get().getId().intValue());
-        Assert.assertEquals("Yassir", student.get().getFirstName());
+        assertThat(student.get(), is(studentDao.findByFirstName("Yassir").get(0)));
 
-        student = studentDao.findById(3);
+        student = studentDao.findById(4);
 
         Assert.assertFalse(student.isPresent());
     }
 
     @Test
-    public void findByFirstName() {
+    public void findByFirstName() throws DaoException {
 
         List<Student> student = studentDao.findByFirstName("Wilfredo");
 
-        Assert.assertEquals(1, student.size());
-        Assert.assertEquals(2, student.get(0).getId().intValue());
-        Assert.assertEquals("Wilfredo", student.get(0).getFirstName());
-        Assert.assertEquals("Aguila", student.get(0).getLastName());
+        assertThat(student, not(IsEmptyCollection.empty()));
+        assertThat(student, hasSize(1));
+        assertThat(student, hasItem(studentDao.findById(2).get()));
     }
 
     @Test
-    public void findByLastName() {
+    public void findByLastName() throws DaoException {
 
         List<Student> student = studentDao.findByLastName("Aguila");
 
-        Assert.assertEquals(2, student.size());
-        Assert.assertEquals(1, student.get(0).getId().intValue());
-        Assert.assertEquals("Yassir", student.get(0).getFirstName());
-        Assert.assertEquals("Wilfredo", student.get(1).getFirstName());
+        assertThat(student, not(IsEmptyCollection.empty()));
+        assertThat(student, hasSize(2));
+        assertThat(student, hasItem(studentDao.findById(1).get()));
+        assertThat(student, hasItem(studentDao.findById(2).get()));
     }
 
     @Test
-    public void findByKey() {
+    public void findByKey() throws DaoException {
 
         List<Student> student = studentDao.findByKey("Yass");
 
-        Assert.assertEquals(1, student.size());
-        Assert.assertEquals(1, student.get(0).getId().intValue());
-        Assert.assertEquals("Yassir", student.get(0).getFirstName());
+        assertThat(student, not(IsEmptyCollection.empty()));
+        assertThat(student, hasSize(1));
+        assertThat(student, hasItem(studentDao.findById(1).get()));
     }
 }

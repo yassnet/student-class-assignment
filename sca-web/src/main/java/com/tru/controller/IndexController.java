@@ -1,5 +1,6 @@
 package com.tru.controller;
 
+import com.tru.exception.CoreException;
 import com.tru.service.ClassService;
 import com.tru.service.StudentClassService;
 import com.tru.service.StudentService;
@@ -48,17 +49,22 @@ public class IndexController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String home(Locale locale, Model model) {
-        logger.info("Welcome home! The client locale is {}.", locale);
+        logger.debug("Welcome home! The client locale is {}.", locale);
         
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(locale);
 
         model.addAttribute("serverTime", ZonedDateTime.now().format(formatter));
 
-        model.addAttribute("students", studentService.getAll());
+        try {
+            model.addAttribute("students", studentService.getAll());
 
-        model.addAttribute("classes", classService.getAll());
+            model.addAttribute("classes", classService.getAll());
 
-        model.addAttribute("assignments", studentClassService.getAll());
+            model.addAttribute("assignments", studentClassService.getAll());
+        } catch (CoreException e) {
+            logger.error("Core error e:", e);
+            return "index";
+        }
 
         return "index";
     }

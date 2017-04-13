@@ -1,5 +1,6 @@
 package com.tru.service;
 
+import com.tru.exception.CoreException;
 import com.tru.model.StudentClass;
 
 import java.util.List;
@@ -12,17 +13,17 @@ import java.util.Optional;
  */
 public interface StudentClassService {
 
-    List<StudentClass> getAll();
+    List<StudentClass> getAll() throws CoreException;
 
-    void save(StudentClass studentClass);
+    void save(StudentClass studentClass) throws CoreException;
 
-    void remove(Integer studentId, String code);
+    void remove(Integer studentId, String code) throws CoreException;
 
-    void removeAll();
+    void removeAll() throws CoreException;
 
-    Optional<StudentClass> findById(Integer id, String code);
+    Optional<StudentClass> findById(Integer id, String code) throws CoreException;
 
-    List<StudentClass> findByStudent(Integer studentId);
+    List<StudentClass> findByStudent(Integer studentId) throws CoreException;
 
-    List<StudentClass> findByClass(String code);
+    List<StudentClass> findByClass(String code) throws CoreException;
 }

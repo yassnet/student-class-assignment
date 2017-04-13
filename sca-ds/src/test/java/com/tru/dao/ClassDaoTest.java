@@ -1,6 +1,8 @@
 package com.tru.dao;
 
+import com.tru.exception.DaoException;
 import com.tru.model.Class;
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 /**
  * @author Yassir Aguila
  * @version $Revision: 1.0 $ $Date: 2017-04-03
@@ -26,16 +32,17 @@ public class ClassDaoTest {
     ClassDao classDao;
 
     @Test
-    public void getAll() throws Exception {
-        List<Class> students = classDao.getAll();
+    public void getAll() throws DaoException {
+        List<Class> classes = classDao.getAll();
 
-        Assert.assertEquals(2, students.size());
+        assertThat(classes, not(IsEmptyCollection.empty()));
+        assertThat(classes, hasSize(2));
     }
 
     @Test
     @Transactional
     @Rollback
-    public void save() throws Exception {
+    public void save() throws DaoException {
         classDao.save(new Class("INF-01", "Algorithms",
                 "Algorithms are the heart of computer science"));
 
@@ -45,10 +52,11 @@ public class ClassDaoTest {
     @Test
     @Transactional
     @Rollback
-    public void update() throws Exception {
+    public void update() throws DaoException {
         classDao.update(new Class("RED-515-V2-P1", "Network Management 2",
                 "Provide the student with a well-founded knowledge about network management."));
         Optional<Class> aClass = classDao.findById("RED-515-V2-P1");
+        
         Assert.assertTrue(aClass.isPresent());
         Assert.assertEquals("Network Management 2", aClass.get().getTitle());
     }
@@ -56,7 +64,7 @@ public class ClassDaoTest {
     @Test
     @Transactional
     @Rollback
-    public void remove() throws Exception {
+    public void remove() throws DaoException {
         classDao.save(new Class("RED-515-V2-P2", "Network Management 2",
                 "Network Management Second Part"));
         Optional<Class> aClass = classDao.findById("RED-515-V2-P2");
@@ -68,15 +76,14 @@ public class ClassDaoTest {
     }
 
     @Test
-    public void exists() throws Exception {
-        Assert.assertTrue(classDao.exists(new Class("RED-514-V2-P1", "Network Security",
-                "Provide to student the ability to manage networks in terms of information security.")));
-        Assert.assertTrue(classDao.exists(new Class("RED-515-V2-P1", null, null)));
-        Assert.assertFalse(classDao.exists(new Class("RED-515-V2-P2", "Yassir", "Aguila")));
+    public void exists() throws DaoException {
+        Assert.assertTrue(classDao.exists("RED-514-V2-P1"));
+        Assert.assertTrue(classDao.exists("RED-515-V2-P1"));
+        Assert.assertFalse(classDao.exists("RED-515-V2-P2"));
     }
 
     @Test
-    public void findById() throws Exception {
+    public void findById() throws DaoException {
         Optional<Class> aClass = classDao.findById("RED-515-V2-P1");
 
         Assert.assertTrue(aClass.isPresent());
@@ -90,34 +97,36 @@ public class ClassDaoTest {
     }
 
     @Test
-    public void findByTitle() {
+    public void findByTitle() throws DaoException {
 
         List<Class> aClass = classDao.findByTitle("Manage");
 
         Assert.assertEquals(1, aClass.size());
         Assert.assertEquals("RED-515-V2-P1", aClass.get(0).getCode());
         Assert.assertTrue(aClass.get(0).getDescription().contains("well-founded knowledge"));
+
+        assertThat(aClass, not(IsEmptyCollection.empty()));
+        assertThat(aClass, hasSize(1));
+        assertThat(aClass, hasItem(classDao.findById("RED-515-V2-P1").get()));
     }
 
     @Test
-    public void findByDescription() {
+    public void findByDescription() throws DaoException {
 
         List<Class> aClass = classDao.findByDescription("networks in terms of information");
 
-        Assert.assertEquals(1, aClass.size());
-        Assert.assertEquals("RED-514-V2-P1", aClass.get(0).getCode());
-        Assert.assertEquals("Network Security", aClass.get(0).getTitle());
-        Assert.assertTrue(aClass.get(0).getDescription().contains("security"));
+        assertThat(aClass, not(IsEmptyCollection.empty()));
+        assertThat(aClass, hasSize(1));
+        assertThat(aClass, hasItem(classDao.findById("RED-514-V2-P1").get()));
     }
 
     @Test
-    public void findByKey() {
+    public void findByKey() throws DaoException {
 
         List<Class> aClass = classDao.findByKey("security");
 
-        Assert.assertEquals(1, aClass.size());
-        Assert.assertEquals("RED-514-V2-P1", aClass.get(0).getCode());
-        Assert.assertEquals("Network Security", aClass.get(0).getTitle());
-        Assert.assertTrue(aClass.get(0).getDescription().contains("information security"));
+        assertThat(aClass, not(IsEmptyCollection.empty()));
+        assertThat(aClass, hasSize(1));
+        assertThat(aClass, hasItem(classDao.findById("RED-514-V2-P1").get()));
     }
 }

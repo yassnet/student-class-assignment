@@ -1,11 +1,11 @@
 swagger: "2.0"
 info:
   description: |
-    Students - Classes Assignemnt RESTFul Web service.
+    Students - Classes Assignment RESTFul Web service.
 
     See [Gibhub Project](https://github.com/yassnet/student-class-assignment) for more information.
   version: "1.0"
-  title: Students - Classes Assignemnt
+  title: Students - Classes Assignment
   contact:
     name: yass.net@gmail.com
   license:
@@ -50,7 +50,6 @@ paths:
           description: OK
         "405":
           description: Request method not supported
-  /student/new:
     post:
       tags:
         - student
@@ -73,7 +72,7 @@ paths:
           description: Created
         "405":
           description: Request method not supported
-  /student/{id}:
+  /students/{id}:
     put:
       tags:
         - student
@@ -162,7 +161,6 @@ paths:
           description: OK
         "405":
           description: Request method not supported
-  /class/new:
     post:
       tags:
         - class
@@ -186,7 +184,7 @@ paths:
           description: Created
         "405":
           description: Request method not supported
-  /class/{id}:
+  /classes/{id}:
     put:
       tags:
         - class
@@ -270,7 +268,7 @@ paths:
           description: OK
         "405":
           description: Request method not supported
-  /class/{code}/students:
+  /classes/{code}/students:
     get:
       tags:
         - assignment
@@ -286,7 +284,7 @@ paths:
           description: OK
         "405":
           description: Request method not supported
-  /student/{code}/classes:
+  /students/{code}/classes:
     get:
       tags:
         - assignment
@@ -302,7 +300,7 @@ paths:
           description: OK
         "405":
           description: Request method not supported
-  /class/{code}/student/{id}:
+  /classes/{code}/students/{id}:
     put:
       tags:
         - assignment
@@ -335,7 +333,7 @@ paths:
           description: Class or Student not found
         "405":
           description: Request method not supported
-  /student/{code}/class/{id}:
+  /students/{code}/classes/{id}:
     put:
       tags:
         - assignment

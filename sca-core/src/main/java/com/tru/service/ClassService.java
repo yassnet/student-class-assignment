@@ -1,5 +1,6 @@
 package com.tru.service;
 
+import com.tru.exception.CoreException;
 import com.tru.model.Class;
 
 import java.util.List;
@@ -12,23 +13,23 @@ import java.util.Optional;
  */
 public interface ClassService {
 
-    List<Class> getAll();
+    List<Class> getAll() throws CoreException;
 
-    void save(Class aClass);
+    void save(Class aClass) throws CoreException;
 
-    void update(Class aClass);
+    void update(Class aClass) throws CoreException;
 
-    void remove(String code);
+    void remove(String code) throws CoreException;
 
-    void removeAll();
+    void removeAll() throws CoreException;
 
-    boolean exists(Class aClass);
+    boolean exists(String code) throws CoreException;
 
-    Optional<Class> findById(String code);
+    Optional<Class> findById(String code) throws CoreException;
 
-    List<Class> findByTitle(String title);
+    List<Class> findByTitle(String title) throws CoreException;
 
-    List<Class> findByDescription(String description);
+    List<Class> findByDescription(String description) throws CoreException;
 
-    List<Class> findByKey(String key);
+    List<Class> findByKey(String key) throws CoreException;
 }
