@@ -1,5 +1,6 @@
 package com.tru.dao;
 
+import com.tru.exception.DaoException;
 import com.tru.model.Class;
 import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Assert;
@@ -31,7 +32,7 @@ public class ClassDaoTest {
     ClassDao classDao;
 
     @Test
-    public void getAll() throws Exception {
+    public void getAll() throws DaoException {
         List<Class> classes = classDao.getAll();
 
         assertThat(classes, not(IsEmptyCollection.empty()));
@@ -41,7 +42,7 @@ public class ClassDaoTest {
     @Test
     @Transactional
     @Rollback
-    public void save() throws Exception {
+    public void save() throws DaoException {
         classDao.save(new Class("INF-01", "Algorithms",
                 "Algorithms are the heart of computer science"));
 
@@ -51,7 +52,7 @@ public class ClassDaoTest {
     @Test
     @Transactional
     @Rollback
-    public void update() throws Exception {
+    public void update() throws DaoException {
         classDao.update(new Class("RED-515-V2-P1", "Network Management 2",
                 "Provide the student with a well-founded knowledge about network management."));
         Optional<Class> aClass = classDao.findById("RED-515-V2-P1");
@@ -63,7 +64,7 @@ public class ClassDaoTest {
     @Test
     @Transactional
     @Rollback
-    public void remove() throws Exception {
+    public void remove() throws DaoException {
         classDao.save(new Class("RED-515-V2-P2", "Network Management 2",
                 "Network Management Second Part"));
         Optional<Class> aClass = classDao.findById("RED-515-V2-P2");
@@ -75,14 +76,14 @@ public class ClassDaoTest {
     }
 
     @Test
-    public void exists() throws Exception {
+    public void exists() throws DaoException {
         Assert.assertTrue(classDao.exists("RED-514-V2-P1"));
         Assert.assertTrue(classDao.exists("RED-515-V2-P1"));
         Assert.assertFalse(classDao.exists("RED-515-V2-P2"));
     }
 
     @Test
-    public void findById() throws Exception {
+    public void findById() throws DaoException {
         Optional<Class> aClass = classDao.findById("RED-515-V2-P1");
 
         Assert.assertTrue(aClass.isPresent());
@@ -96,7 +97,7 @@ public class ClassDaoTest {
     }
 
     @Test
-    public void findByTitle() {
+    public void findByTitle() throws DaoException {
 
         List<Class> aClass = classDao.findByTitle("Manage");
 
@@ -110,7 +111,7 @@ public class ClassDaoTest {
     }
 
     @Test
-    public void findByDescription() {
+    public void findByDescription() throws DaoException {
 
         List<Class> aClass = classDao.findByDescription("networks in terms of information");
 
@@ -120,7 +121,7 @@ public class ClassDaoTest {
     }
 
     @Test
-    public void findByKey() {
+    public void findByKey() throws DaoException {
 
         List<Class> aClass = classDao.findByKey("security");
 

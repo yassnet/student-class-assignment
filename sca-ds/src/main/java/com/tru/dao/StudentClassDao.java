@@ -1,10 +1,10 @@
 package com.tru.dao;
 
+import com.tru.exception.DaoException;
 import com.tru.model.StudentClass;
 import com.tru.model.StudentClassPK;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Yassir Aguila
@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 public interface StudentClassDao extends BaseDao<StudentClass, StudentClassPK> {
 
-    List<StudentClass> findByStudent(Integer studentId);
+    List<StudentClass> findByStudent(Integer studentId) throws DaoException;
 
-    List<StudentClass> findByClass(String code);
+    List<StudentClass> findByClass(String code) throws DaoException;
 }

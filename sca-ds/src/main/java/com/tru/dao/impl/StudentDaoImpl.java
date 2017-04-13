@@ -1,14 +1,15 @@
 package com.tru.dao.impl;
 
 import com.tru.dao.StudentDao;
+import com.tru.exception.DaoException;
 import com.tru.model.Student;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Yassir Aguila
@@ -17,34 +18,22 @@ import java.util.Optional;
  */
 public class StudentDaoImpl extends BaseDaoImpl<Student, Integer> implements StudentDao {
 
+    private static final Logger logger = LoggerFactory.getLogger(BaseDaoImpl.class);
+
     public StudentDaoImpl() {
         super(Student.class);
     }
 
     @Override
-    public List<Student> findByKey(String key) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        List<Student> students = new ArrayList<>();
-        String hql = "from com.tru.model.Student where firstName like :key or lastName like :key";
-        try {
-            Query query = session.createQuery(hql);
-            query.setParameter("key", "%" + key + "%");
-            students = query.list();
-            transaction.commit();
-        } catch (Exception e) {
-            transaction.rollback();
-        } finally {
-            session.close();
-        }
-        return students;
+    public List<Student> findByKey(String key) throws DaoException {
+        return findByKey(key, "from com.tru.model.Student where firstName like :key or lastName like :key");
     }
 
     @Override
-    public List<Student> findByFirstName(String firstName) {
+    public List<Student> findByFirstName(String firstName) throws DaoException {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        List<Student> students = new ArrayList<>();
+        List<Student> students;
         String hql = "from com.tru.model.Student where firstName like :firstName";
         try {
             Query query = session.createQuery(hql);
@@ -52,7 +41,9 @@ public class StudentDaoImpl extends BaseDaoImpl<Student, Integer> implements Stu
             students = query.list();
             transaction.commit();
         } catch (Exception e) {
+            logger.error("DaoException: ", e);
             transaction.rollback();
+            throw new DaoException(e.getMessage(), e.getCause() != null ? e.getCause().getMessage() : null);
         } finally {
             session.close();
         }
@@ -60,10 +51,10 @@ public class StudentDaoImpl extends BaseDaoImpl<Student, Integer> implements Stu
     }
 
     @Override
-    public List<Student> findByLastName(String lastName) {
+    public List<Student> findByLastName(String lastName) throws DaoException {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        List<Student> students = new ArrayList<>();
+        List<Student> students;
         String hql = "from com.tru.model.Student where lastName like :lastName";
         try {
             Query query = session.createQuery(hql);
@@ -71,7 +62,9 @@ public class StudentDaoImpl extends BaseDaoImpl<Student, Integer> implements Stu
             students = query.list();
             transaction.commit();
         } catch (Exception e) {
+            logger.error("DaoException: ", e);
             transaction.rollback();
+            throw new DaoException(e.getMessage(), e.getCause() != null ? e.getCause().getMessage() : null);
         } finally {
             session.close();
         }

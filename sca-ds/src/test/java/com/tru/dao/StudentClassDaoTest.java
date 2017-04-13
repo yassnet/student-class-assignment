@@ -1,5 +1,6 @@
 package com.tru.dao;
 
+import com.tru.exception.DaoException;
 import com.tru.model.StudentClass;
 import com.tru.model.StudentClassPK;
 import org.hamcrest.collection.IsEmptyCollection;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -28,14 +28,14 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
  */
 @ContextConfiguration(locations = "classpath:db-derby-config.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-@TransactionConfiguration(defaultRollback=true,transactionManager="transactionManager")
+@TransactionConfiguration(transactionManager="transactionManager")
 public class StudentClassDaoTest {
 
     @Autowired
     StudentClassDao studentClassDao;
 
     @Test
-    public void getAll() throws Exception {
+    public void getAll() throws DaoException {
         List<StudentClass> studentClasses = studentClassDao.getAll();
 
         assertThat(studentClasses, not(IsEmptyCollection.empty()));
@@ -45,7 +45,7 @@ public class StudentClassDaoTest {
     @Test
     @Transactional
     @Rollback
-    public void save() throws Exception {
+    public void save() throws DaoException {
         studentClassDao.save(new StudentClass(new StudentClassPK(1, "RED-515-V2-P1")));
 
         Assert.assertTrue(studentClassDao.findById(new StudentClassPK(1, "RED-515-V2-P1")).isPresent());
@@ -56,7 +56,7 @@ public class StudentClassDaoTest {
     @Test
     @Transactional
     @Rollback
-    public void remove() throws Exception {
+    public void remove() throws DaoException {
         studentClassDao.save(new StudentClass(new StudentClassPK(1,"RED-515-V2-P1")));
 
         studentClassDao.remove(new StudentClassPK(1, "RED-515-V2-P1"));
@@ -64,7 +64,7 @@ public class StudentClassDaoTest {
     }
 
     @Test
-    public void findById() throws Exception {
+    public void findById() throws DaoException {
         Optional<StudentClass> studentClass = studentClassDao.findById(new StudentClassPK(2, "RED-514-V2-P1"));
 
         Assert.assertTrue(studentClass.isPresent());
@@ -76,7 +76,7 @@ public class StudentClassDaoTest {
     }
 
     @Test
-    public void findByStudent() throws Exception {
+    public void findByStudent() throws DaoException {
         List<StudentClass> studentClasses = studentClassDao.findByStudent(2);
 
         assertThat(studentClasses, not(IsEmptyCollection.empty()));
@@ -85,7 +85,7 @@ public class StudentClassDaoTest {
     }
 
     @Test
-    public void findByClass() throws Exception {
+    public void findByClass() throws DaoException {
         List<StudentClass> studentClasses = studentClassDao.findByClass("RED-514-V2-P1");
 
         assertThat(studentClasses, not(IsEmptyCollection.empty()));

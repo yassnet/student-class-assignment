@@ -1,9 +1,9 @@
 package com.tru.dao;
 
+import com.tru.exception.DaoException;
 import com.tru.model.Student;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Yassir Aguila
@@ -12,9 +12,9 @@ import java.util.Optional;
  */
 public interface StudentDao extends BaseDao<Student, Integer> {
 
-    List<Student> findByKey(String key);
+    List<Student> findByKey(String key) throws DaoException;
 
-    List<Student> findByFirstName(String firstName);
+    List<Student> findByFirstName(String firstName) throws DaoException;
 
-    List<Student> findByLastName(String lastName);
+    List<Student> findByLastName(String lastName) throws DaoException;
 }

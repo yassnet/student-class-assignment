@@ -1,9 +1,9 @@
 package com.tru.dao;
 
+import com.tru.exception.DaoException;
 import com.tru.model.Class;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Yassir Aguila
@@ -12,9 +12,9 @@ import java.util.Optional;
  */
 public interface ClassDao extends BaseDao<Class, String> {
 
-    List<Class> findByKey(String key);
+    List<Class> findByKey(String key) throws DaoException;
 
-    List<Class> findByTitle(String title);
+    List<Class> findByTitle(String title) throws DaoException;
 
-    List<Class> findByDescription(String description);
+    List<Class> findByDescription(String description) throws DaoException;
 }

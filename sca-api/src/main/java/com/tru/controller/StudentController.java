@@ -1,6 +1,8 @@
 package com.tru.controller;
 
+import com.tru.exception.CoreException;
 import com.tru.model.Student;
+import com.tru.response.ResponseMessage;
 import com.tru.service.StudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +35,7 @@ public class StudentController {
     }
 
     @RequestMapping(value = "/students", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Student>> find(@RequestParam(value = "key", required = false) String key,
+    public ResponseEntity<?> find(@RequestParam(value = "key", required = false) String key,
                                               @RequestParam(value = "firstName", required = false) String firstName,
                                               @RequestParam(value = "lastName", required = false) String lastName) {
 
@@ -41,21 +43,32 @@ public class StudentController {
 
         List<Student> students;
 
-        if (!StringUtils.isEmpty(key)) students = studentService.findByKey(key);
-        else if (!StringUtils.isEmpty(firstName)) students = studentService.findByFirstName(firstName);
-        else if (!StringUtils.isEmpty(lastName)) students = studentService.findByLastName(lastName);
-        else students = studentService.getAll();
+        try {
+            if (!StringUtils.isEmpty(key)) students = studentService.findByKey(key);
+            else if (!StringUtils.isEmpty(firstName)) students = studentService.findByFirstName(firstName);
+            else if (!StringUtils.isEmpty(lastName)) students = studentService.findByLastName(lastName);
+            else students = studentService.getAll();
+        } catch (CoreException e) {
+            logger.error("Core error key:[{}] firstName:[{}] lastName:[{}] e:", new Object[]{key, firstName, lastName, e});
+            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return students.isEmpty() ? new ResponseEntity<>(HttpStatus.NO_CONTENT) :
                 new ResponseEntity<>(students, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/students/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Student> get(@PathVariable("id") Integer id) {
+    public ResponseEntity<?> get(@PathVariable("id") Integer id) {
 
         logger.debug("Getting Student... id:[{}]", id);
 
-        Optional<Student> student = studentService.findById(id);
+        Optional<Student> student;
+        try {
+            student = studentService.findById(id);
+        } catch (CoreException e) {
+            logger.error("Core error id:[{}] e:", id, e);
+            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return student.map(student1 -> new ResponseEntity<>(student1, HttpStatus.OK))
                 .orElseGet(() -> {
                     logger.debug("Student not found... id:[{}]", id);
@@ -64,60 +77,78 @@ public class StudentController {
     }
 
     @RequestMapping(value = "/students", method = RequestMethod.POST)
-    public ResponseEntity<Void> save(@RequestBody Student student, UriComponentsBuilder ucb) {
+    public ResponseEntity<?> save(@RequestBody Student student, UriComponentsBuilder ucb) {
 
         logger.debug("Saving Student... firstName:[{}] lastName:[{}]", student.getFirstName(), student.getLastName());
 
-        if (studentService.exists(student.getId())) {
-            logger.warn("Conflict saving Student, firstName:[{}] lastName:[{}]", student.getFirstName(),
-                    student.getLastName());
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        try {
+            studentService.save(student);
+        } catch (CoreException e) {
+            logger.error("Core error firstName:[{}] lastName:[{}] e:", new Object[]{student.getFirstName(), student.getLastName(), e});
+            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        studentService.save(student);
         logger.debug("Student saved, firstName:[{}] lastName:[{}]", student.getFirstName(), student.getLastName());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/students/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Student> update(@PathVariable("id") Integer id, @RequestBody Student student) {
+    public ResponseEntity<?> update(@PathVariable("id") Integer id, @RequestBody Student student) {
 
         logger.debug("Updating Student... id:[{}]", id);
 
-        Optional<Student> studentToUpdate = studentService.findById(id);
+        Optional<Student> studentToUpdate;
+        try {
+            studentToUpdate = studentService.findById(id);
 
-        if (!studentToUpdate.isPresent()) {
-            logger.warn("Conflict updating Student, id:[{}]", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if (!studentToUpdate.isPresent()) {
+                logger.warn("Conflict updating Student, id:[{}]", id);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            studentToUpdate.get().setFirstName(student.getFirstName());
+            studentToUpdate.get().setLastName(student.getLastName());
+
+            studentService.update(studentToUpdate.get());
+        } catch (CoreException e) {
+            logger.error("Core error id:[{}] e:", id, e);
+            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        studentToUpdate.get().setFirstName(student.getFirstName());
-        studentToUpdate.get().setLastName(student.getLastName());
-
-        studentService.update(studentToUpdate.get());
         logger.debug("Student updated, id:[{}] firstName:[{}] lastName:[{}]", new Object[]{id, student.getFirstName(),
                 student.getLastName()});
         return new ResponseEntity<>(studentToUpdate.get(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/students/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Student> remove(@PathVariable("id") Integer id) {
+    public ResponseEntity<?> remove(@PathVariable("id") Integer id) {
         logger.debug("Removing Student... id:[{}]", id);
 
-        Optional<Student> student = studentService.findById(id);
-        if (!student.isPresent()) {
-            logger.debug("Student not found... id:[{}]", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        try {
+            Optional<Student> student = studentService.findById(id);
+            if (!student.isPresent()) {
+                logger.debug("Student not found... id:[{}]", id);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
 
-        studentService.remove(id);
+            studentService.remove(id);
+        } catch (CoreException e) {
+            logger.error("Core error id:[{}] e:", id, e);
+            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
         logger.debug("Student removed, id:[{}]", id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @RequestMapping(value = "/students", method = RequestMethod.DELETE)
-    public ResponseEntity<Student> removeAll() {
+    public ResponseEntity<?> removeAll() {
 
-        studentService.removeAll();
+        try {
+            studentService.removeAll();
+        } catch (CoreException e) {
+            logger.error("Core error e:", e);
+            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         logger.debug("All students removed");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

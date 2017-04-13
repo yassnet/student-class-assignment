@@ -1,5 +1,7 @@
 package com.tru.dao;
 
+import com.tru.exception.DaoException;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -8,17 +10,17 @@ import java.util.Optional;
  */
 public interface BaseDao <T, PK extends java.io.Serializable> {
 
-    List<T> getAll();
+    List<T> getAll() throws DaoException;
 
-    void save(T aClass);
+    void save(T aClass) throws DaoException;
 
-    void update(T aClass);
+    void update(T aClass) throws DaoException;
 
-    void remove(PK id);
+    void remove(PK id) throws DaoException;
 
-    void removeAll();
+    void removeAll() throws DaoException;
 
-    boolean exists(PK id);
+    boolean exists(PK id) throws DaoException;
 
-    Optional<T> findById(PK id);
+    Optional<T> findById(PK id) throws DaoException;
 }
