@@ -2,8 +2,9 @@ package com.tru.controller;
 
 import com.tru.model.Student;
 import com.tru.service.StudentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,8 @@ import java.util.Optional;
 @RestController
 public class StudentController {
 
+    private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
+
     @Autowired
     private StudentService studentService;
 
@@ -33,6 +36,9 @@ public class StudentController {
     public ResponseEntity<List<Student>> find(@RequestParam(value = "key", required = false) String key,
                                               @RequestParam(value = "firstName", required = false) String firstName,
                                               @RequestParam(value = "lastName", required = false) String lastName) {
+
+        logger.debug("Getting students... key:[{}] firstName:[{}] lastName:[{}]", new Object[]{key, firstName, lastName});
+
         List<Student> students;
 
         if (!StringUtils.isEmpty(key)) students = studentService.findByKey(key);
@@ -41,36 +47,46 @@ public class StudentController {
         else students = studentService.getAll();
 
         return students.isEmpty() ? new ResponseEntity<>(HttpStatus.NO_CONTENT) :
-                                    new ResponseEntity<>(students, HttpStatus.OK);
+                new ResponseEntity<>(students, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/student/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/students/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Student> get(@PathVariable("id") Integer id) {
+
+        logger.debug("Getting Student... id:[{}]", id);
 
         Optional<Student> student = studentService.findById(id);
         return student.map(student1 -> new ResponseEntity<>(student1, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> {
+                    logger.debug("Student not found... id:[{}]", id);
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                });
     }
 
-    @RequestMapping(value = "/student/new", method = RequestMethod.POST)
+    @RequestMapping(value = "/students", method = RequestMethod.POST)
     public ResponseEntity<Void> save(@RequestBody Student student, UriComponentsBuilder ucb) {
 
-        if (studentService.exists(student)) {
+        logger.debug("Saving Student... firstName:[{}] lastName:[{}]", student.getFirstName(), student.getLastName());
+
+        if (studentService.exists(student.getId())) {
+            logger.warn("Conflict saving Student, firstName:[{}] lastName:[{}]", student.getFirstName(),
+                    student.getLastName());
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
-
         studentService.save(student);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucb.path("/student/{id}").buildAndExpand(student.getId()).toUri());
+        logger.debug("Student saved, firstName:[{}] lastName:[{}]", student.getFirstName(), student.getLastName());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/student/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/students/{id}", method = RequestMethod.PUT)
     public ResponseEntity<Student> update(@PathVariable("id") Integer id, @RequestBody Student student) {
+
+        logger.debug("Updating Student... id:[{}]", id);
 
         Optional<Student> studentToUpdate = studentService.findById(id);
 
         if (!studentToUpdate.isPresent()) {
+            logger.warn("Conflict updating Student, id:[{}]", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -78,19 +94,23 @@ public class StudentController {
         studentToUpdate.get().setLastName(student.getLastName());
 
         studentService.update(studentToUpdate.get());
-
+        logger.debug("Student updated, id:[{}] firstName:[{}] lastName:[{}]", new Object[]{id, student.getFirstName(),
+                student.getLastName()});
         return new ResponseEntity<>(studentToUpdate.get(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/student/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/students/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Student> remove(@PathVariable("id") Integer id) {
+        logger.debug("Removing Student... id:[{}]", id);
 
         Optional<Student> student = studentService.findById(id);
         if (!student.isPresent()) {
+            logger.debug("Student not found... id:[{}]", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         studentService.remove(id);
+        logger.debug("Student removed, id:[{}]", id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -98,7 +118,7 @@ public class StudentController {
     public ResponseEntity<Student> removeAll() {
 
         studentService.removeAll();
-
+        logger.debug("All students removed");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

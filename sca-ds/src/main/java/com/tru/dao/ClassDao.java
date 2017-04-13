@@ -10,25 +10,11 @@ import java.util.Optional;
  * @version $Revision: 1.0 $ $Date: 2017-04-02
  * @since 1.8
  */
-public interface ClassDao {
+public interface ClassDao extends BaseDao<Class, String> {
 
-    List<Class> getAll();
-
-    void save(Class aClass);
-
-    void update(Class aClass);
-
-    void remove(String code);
-
-    void removeAll();
-
-    boolean exists(Class aClass);
-
-    Optional<Class> findById(String code);
+    List<Class> findByKey(String key);
 
     List<Class> findByTitle(String title);
 
     List<Class> findByDescription(String description);
-
-    List<Class> findByKey(String key);
 }

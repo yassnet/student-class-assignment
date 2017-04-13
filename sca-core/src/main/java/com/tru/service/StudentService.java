@@ -22,7 +22,7 @@ public interface StudentService {
 
     void removeAll();
 
-    boolean exists(Student student);
+    boolean exists(Integer id);
 
     Optional<Student> findById(Integer id);
 

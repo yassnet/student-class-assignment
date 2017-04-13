@@ -1,8 +1,8 @@
 package com.tru.dao;
 
-import com.tru.model.Class;
-import com.tru.model.Student;
 import com.tru.model.StudentClass;
+import com.tru.model.StudentClassPK;
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 /**
  * @author Yassir Aguila
@@ -33,45 +38,39 @@ public class StudentClassDaoTest {
     public void getAll() throws Exception {
         List<StudentClass> studentClasses = studentClassDao.getAll();
 
-        Assert.assertEquals(2, studentClasses.size());
+        assertThat(studentClasses, not(IsEmptyCollection.empty()));
+        assertThat(studentClasses, hasSize(2));
     }
 
     @Test
     @Transactional
     @Rollback
     public void save() throws Exception {
-        studentClassDao.save(new StudentClass(new Student(1, null, null),
-                new Class("RED-515-V2-P1", null,
-                        null)));
+        studentClassDao.save(new StudentClass(new StudentClassPK(1, "RED-515-V2-P1")));
 
-        Assert.assertTrue(studentClassDao.findById(1, "RED-515-V2-P1").isPresent());
+        Assert.assertTrue(studentClassDao.findById(new StudentClassPK(1, "RED-515-V2-P1")).isPresent());
 
-        studentClassDao.remove(1, "RED-515-V2-P1");
+        studentClassDao.remove(new StudentClassPK(1, "RED-515-V2-P1"));
     }
 
     @Test
     @Transactional
     @Rollback
     public void remove() throws Exception {
-        studentClassDao.save(new StudentClass(new Student(1, null, null),
-                        new Class("RED-515-V2-P1", null,
-                                null)));
+        studentClassDao.save(new StudentClass(new StudentClassPK(1,"RED-515-V2-P1")));
 
-        studentClassDao.remove(1, "RED-515-V2-P1");
-        Assert.assertFalse(studentClassDao.findById(1, "RED-515-V2-P1").isPresent());
+        studentClassDao.remove(new StudentClassPK(1, "RED-515-V2-P1"));
+        Assert.assertFalse(studentClassDao.findById(new StudentClassPK(1, "RED-515-V2-P1")).isPresent());
     }
 
     @Test
     public void findById() throws Exception {
-        Optional<StudentClass> studentClass = studentClassDao.findById(2, "RED-514-V2-P1");
+        Optional<StudentClass> studentClass = studentClassDao.findById(new StudentClassPK(2, "RED-514-V2-P1"));
 
         Assert.assertTrue(studentClass.isPresent());
-        Assert.assertEquals("RED-514-V2-P1", studentClass.get().getaClass().getCode());
-        Assert.assertEquals("Wilfredo", studentClass.get().getStudent().getFirstName());
-        Assert.assertEquals("Provide to student the ability to manage networks in terms of information security.",
-                studentClass.get().getaClass().getDescription());
-
-        studentClass = studentClassDao.findById(1, "invalid_code");
+        Assert.assertEquals("RED-514-V2-P1", studentClass.get().getStudentClassPK().getaClass().getCode());
+        
+        studentClass = studentClassDao.findById(new StudentClassPK(1, "RED-515-V2-P1"));
 
         Assert.assertFalse(studentClass.isPresent());
     }
@@ -80,19 +79,18 @@ public class StudentClassDaoTest {
     public void findByStudent() throws Exception {
         List<StudentClass> studentClasses = studentClassDao.findByStudent(2);
 
-        Assert.assertEquals(1, studentClasses.size());
-        Assert.assertEquals("RED-514-V2-P1", studentClasses.get(0).getaClass().getCode());
-        Assert.assertEquals("Network Security", studentClasses.get(0).getaClass().getTitle());
-        Assert.assertTrue(studentClasses.get(0).getaClass().getDescription().contains("information security"));
+        assertThat(studentClasses, not(IsEmptyCollection.empty()));
+        assertThat(studentClasses, hasSize(1));
+        Assert.assertEquals(new StudentClassPK(2, "RED-514-V2-P1"), studentClasses.get(0).getStudentClassPK());
     }
 
     @Test
     public void findByClass() throws Exception {
         List<StudentClass> studentClasses = studentClassDao.findByClass("RED-514-V2-P1");
 
-        Assert.assertEquals(2, studentClasses.size());
-        Assert.assertEquals(1, studentClasses.get(0).getStudent().getId().intValue());
-        Assert.assertEquals("Yassir", studentClasses.get(0).getStudent().getFirstName());
-        Assert.assertEquals("Aguila", studentClasses.get(0).getStudent().getLastName());
+        assertThat(studentClasses, not(IsEmptyCollection.empty()));
+        assertThat(studentClasses, hasSize(2));
+        Assert.assertEquals(new StudentClassPK(1, "RED-514-V2-P1"), studentClasses.get(0).getStudentClassPK());
+        Assert.assertEquals(new StudentClassPK(2, "RED-514-V2-P1"), studentClasses.get(1).getStudentClassPK());
     }
 }

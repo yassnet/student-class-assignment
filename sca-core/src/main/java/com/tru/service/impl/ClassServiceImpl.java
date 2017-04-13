@@ -48,8 +48,8 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Override
-    public boolean exists(Class aClass) {
-        return classDao.exists(aClass);
+    public boolean exists(String code) {
+        return classDao.exists(code);
     }
 
     @Override

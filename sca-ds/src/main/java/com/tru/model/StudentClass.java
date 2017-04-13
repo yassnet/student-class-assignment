@@ -14,38 +14,22 @@ import java.io.Serializable;
 @Table(name = "students_classes")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class StudentClass implements Serializable {
-    @Id
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "student_id")
-    private Student student;
-
-    @Id
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "class_code")
-    private Class aClass;
+    @EmbeddedId
+    private StudentClassPK studentClassPK;
 
     public StudentClass() {
     }
 
-    public StudentClass(Student student, Class aClass) {
-        this.student = student;
-        this.aClass = aClass;
+    public StudentClass(StudentClassPK studentClassPK) {
+        this.studentClassPK = studentClassPK;
     }
 
-    public Student getStudent() {
-        return student;
+    public StudentClassPK getStudentClassPK() {
+        return studentClassPK;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public Class getaClass() {
-        return aClass;
-    }
-
-    public void setaClass(Class aClass) {
-        this.aClass = aClass;
+    public void setStudentClassPK(StudentClassPK studentClassPK) {
+        this.studentClassPK = studentClassPK;
     }
 
     @Override
@@ -55,22 +39,18 @@ public class StudentClass implements Serializable {
 
         StudentClass that = (StudentClass) o;
 
-        if (!student.equals(that.student)) return false;
-        return aClass.equals(that.aClass);
+        return studentClassPK != null ? studentClassPK.equals(that.studentClassPK) : that.studentClassPK == null;
     }
 
     @Override
     public int hashCode() {
-        int result = student.hashCode();
-        result = 31 * result + aClass.hashCode();
-        return result;
+        return studentClassPK != null ? studentClassPK.hashCode() : 0;
     }
 
     @Override
     public String toString() {
         return "StudentClass{" +
-                "student=" + student +
-                ", aClass=" + aClass +
+                "studentClassPK=" + studentClassPK +
                 '}';
     }
 }

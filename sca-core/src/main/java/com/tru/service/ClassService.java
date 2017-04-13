@@ -22,7 +22,7 @@ public interface ClassService {
 
     void removeAll();
 
-    boolean exists(Class aClass);
+    boolean exists(String code);
 
     Optional<Class> findById(String code);
 

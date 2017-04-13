@@ -48,8 +48,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public boolean exists(Student student) {
-        return studentDao.exists(student);
+    public boolean exists(Integer id) {
+        return studentDao.exists(id);
     }
 
     @Override

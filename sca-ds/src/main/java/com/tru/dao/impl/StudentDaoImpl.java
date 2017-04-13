@@ -15,72 +15,29 @@ import java.util.Optional;
  * @version $Revision: 1.0 $ $Date: 2017-04-02
  * @since 1.8
  */
-public class StudentDaoImpl extends BaseDaoImpl implements StudentDao {
+public class StudentDaoImpl extends BaseDaoImpl<Student, Integer> implements StudentDao {
 
-    @Override
-    public List<Student> getAll() {
-        return sessionFactory.openSession().createQuery("From com.tru.model.Student").list();
+    public StudentDaoImpl() {
+        super(Student.class);
     }
 
     @Override
-    public void save(Student student) {
-        saveObject(student);
-    }
-
-    @Override
-    public void update(Student student) {
-        updateObject(student);
-    }
-
-    @Override
-    public void remove(Integer id) {
+    public List<Student> findByKey(String key) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        Student student;
+        List<Student> students = new ArrayList<>();
+        String hql = "from com.tru.model.Student where firstName like :key or lastName like :key";
         try {
-            student = (Student) session.get(Student.class, id);
-            session.delete(student);
+            Query query = session.createQuery(hql);
+            query.setParameter("key", "%" + key + "%");
+            students = query.list();
             transaction.commit();
-            session.close();
         } catch (Exception e) {
             transaction.rollback();
+        } finally {
             session.close();
         }
-    }
-
-    @Override
-    public void removeAll() {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            session.createQuery("delete from com.tru.model.Student").executeUpdate();
-            transaction.commit();
-            session.close();
-        } catch (Exception e) {
-            transaction.rollback();
-            session.close();
-        }
-    }
-
-    @Override
-    public boolean exists(Student student) {
-        return findById(student.getId()).isPresent();
-    }
-
-    @Override
-    public Optional<Student> findById(Integer id) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        Student student = null;
-        try {
-            student = (Student) session.get(Student.class, id);
-            transaction.commit();
-            session.close();
-        } catch (Exception e) {
-            transaction.rollback();
-            session.close();
-        }
-        return Optional.ofNullable(student);
+        return students;
     }
 
     @Override
@@ -94,9 +51,9 @@ public class StudentDaoImpl extends BaseDaoImpl implements StudentDao {
             query.setParameter("firstName", "%" + firstName + "%");
             students = query.list();
             transaction.commit();
-            session.close();
         } catch (Exception e) {
             transaction.rollback();
+        } finally {
             session.close();
         }
         return students;
@@ -113,28 +70,9 @@ public class StudentDaoImpl extends BaseDaoImpl implements StudentDao {
             query.setParameter("lastName", "%" + lastName + "%");
             students = query.list();
             transaction.commit();
-            session.close();
         } catch (Exception e) {
             transaction.rollback();
-            session.close();
-        }
-        return students;
-    }
-
-    @Override
-    public List<Student> findByKey(String key) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        List<Student> students = new ArrayList<>();
-        String hql = "from com.tru.model.Student where firstName like :key or lastName like :key";
-        try {
-            Query query = session.createQuery(hql);
-            query.setParameter("key", "%" + key + "%");
-            students = query.list();
-            transaction.commit();
-            session.close();
-        } catch (Exception e) {
-            transaction.rollback();
+        } finally {
             session.close();
         }
         return students;

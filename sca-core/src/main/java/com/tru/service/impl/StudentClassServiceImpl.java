@@ -2,6 +2,7 @@ package com.tru.service.impl;
 
 import com.tru.dao.StudentClassDao;
 import com.tru.model.StudentClass;
+import com.tru.model.StudentClassPK;
 import com.tru.service.StudentClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,7 +35,7 @@ public class StudentClassServiceImpl implements StudentClassService {
 
     @Override
     public void remove(Integer studentId, String code) {
-        studentClassDao.remove(studentId, code);
+        studentClassDao.remove(new StudentClassPK(studentId, code));
     }
 
     @Override
@@ -44,7 +45,7 @@ public class StudentClassServiceImpl implements StudentClassService {
 
     @Override
     public Optional<StudentClass> findById(Integer id, String code) {
-        return studentClassDao.findById(id, code);
+        return studentClassDao.findById(new StudentClassPK(id, code));
     }
 
     @Override
