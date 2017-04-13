@@ -420,7 +420,7 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                key
+                                                q
                                             <td><p>Finds a class by code, title and description</p>
                                         </td>
                                             <td></td>
@@ -1151,7 +1151,7 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                key
+                                                q
                                             <td><p>Find a student by full name</p>
                                         </td>
                                             <td></td>

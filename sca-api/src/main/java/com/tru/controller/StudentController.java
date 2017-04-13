@@ -35,7 +35,7 @@ public class StudentController {
     }
 
     @RequestMapping(value = "/students", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> find(@RequestParam(value = "key", required = false) String key,
+    public ResponseEntity<?> find(@RequestParam(value = "q", required = false) String key,
                                               @RequestParam(value = "firstName", required = false) String firstName,
                                               @RequestParam(value = "lastName", required = false) String lastName) {
 
