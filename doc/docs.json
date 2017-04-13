@@ -44,7 +44,7 @@
             "type": "String"
           },
           {
-            "name": "key",
+            "name": "q",
             "description": "Find a student by full name",
             "type": "String"
           }
@@ -224,7 +224,7 @@
             "type": "String"
           },
           {
-            "name": "key",
+            "name": "q",
             "description": "Finds a class by code, title or description",
             "type": "String"
           }

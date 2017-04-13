@@ -36,7 +36,7 @@ public class ClassController {
     }
 
     @RequestMapping(value = "/classes", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> find(@RequestParam(value = "key", required = false) String key,
+    public ResponseEntity<?> find(@RequestParam(value = "q", required = false) String key,
                                             @RequestParam(value = "title", required = false) String title,
                                             @RequestParam(value = "description", required = false) String description) {
 

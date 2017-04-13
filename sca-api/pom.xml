@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.tru</groupId>
         <artifactId>sca</artifactId>
-        <version>1.0</version>
+        <version>1.2</version>
     </parent>
     <artifactId>sca-api</artifactId>
     <packaging>war</packaging>
@@ -27,6 +27,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
