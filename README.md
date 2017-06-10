@@ -13,4 +13,5 @@ It uses Hibernate that is an Object/Relational Mapping framework with JPA provid
 
 All layers use many modules of spring framework to handle servlet,  implement beans, DAO tests and RESTful web service.
 
+
 You can found the distributable wars in 'dist' folder.
