@@ -65,6 +65,7 @@
 
     <dependencyManagement>
         <dependencies>
+            
             <!-- Derby -->
             <dependency>
                 <groupId>org.apache.derby</groupId>
