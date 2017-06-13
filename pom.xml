@@ -16,7 +16,6 @@
         <module>sca-api</module>
         <module>sca-web</module>
     </modules>
-    
 
     <properties>
         <junit.version>4.12</junit.version>
